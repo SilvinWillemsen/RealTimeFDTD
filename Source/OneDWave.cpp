@@ -26,10 +26,6 @@ OneDWave::OneDWave (double kIn) : k (kIn) // <- This is an initialiser list. It 
     
     //******
     
-//    // ONLY FOR TESTING PURPOSES, you'll have to change this.
-//    N = 100;
-    
-    
     // Initialise vectors containing the state of the system
     uStates = std::vector<std::vector<double>> (3,
                                         std::vector<double>(N+1, 0));
