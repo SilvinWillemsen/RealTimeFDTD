@@ -1,8 +1,11 @@
 #pragma once
 
 #include <JuceHeader.h>
+
 ///__________________________
+
 #include "OneDWave.h"
+
 ///__________________________
 
 class MainComponent  : public juce::AudioAppComponent,
@@ -40,7 +43,7 @@ private:
     
     double fs; // Sample rate which we can retrieve from the prepareToPlay function
     
-    std::unique_ptr<OneDWave> oneDWave; // using a smart pointer for resonator class
+    std::unique_ptr<OneDWave> oneDWave; // using a smart pointer for 1D wave class
 
     ///__________________________
     

@@ -35,12 +35,12 @@ public:
     void excite (double excitationLoc);
     
     // Get the output at a specified ratio of the length of the system
-    float getOutput (float outRatio) { return u[1][(int)floor(outRatio * N)];};
+    float getOutput (float outRatio) { return u[1][(int)floor(outRatio * N)]; };
     
 private:
     
     // Variables
-    double k; // time step
+    double k; // Time step (in s)
     double c; // Wave speed (in m/s)
     double h; // Grid spacing (in m)
     double L; // Length (in m)
