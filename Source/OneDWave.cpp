@@ -15,8 +15,19 @@
 OneDWave::OneDWave (double kIn) : k (kIn) // <- This is an initialiser list. It initialises the member variable 'k' (in the "private" section in OneDWave.h), using the argument of the constructor 'kIn'.
 {
     
-    // ONLY FOR TESTING PURPOSES, you'll have to change this.
-    N = 100;
+    //******
+
+    c = 300;
+    h = c * k;
+    L = 1;
+    N = floor(L / h);
+    h = L / N;
+    lambdaSq = c * c * k * k / (h * h);
+    
+    //******
+    
+//    // ONLY FOR TESTING PURPOSES, you'll have to change this.
+//    N = 100;
     
     
     // Initialise vectors containing the state of the system
@@ -30,7 +41,8 @@ OneDWave::OneDWave (double kIn) : k (kIn) // <- This is an initialiser list. It 
     for (int i = 0; i < 3; ++i)
         u[i] = &uStates[i][0];
     
-    excite();
+    // Excite at the start halfway along the system.
+    excite (0.5);
 
 }
 
@@ -58,12 +70,26 @@ void OneDWave::calculateScheme()
 {
     // Here is where you'll have to implement your update equation in a for loop (ranging from l = 1 to l < N).
     
+    //******
+    
+    for (int l = 1; l < N; ++l)
+        u[0][l] = 2 * u[1][l] - u[2][l] + lambdaSq * (u[1][l+1] - 2 * u[1][l] + u[1][l-1]);
+    
+    //******
 }
 
 void OneDWave::updateStates()
 {
     // Here is where you'll have to implement the pointer switch.
     
+    //******
+
+    double* uTmp = u[2];
+    u[2] = u[1];
+    u[1] = u[0];
+    u[0] = uTmp;
+    
+    //******
 }
 
 Path OneDWave::visualiseState (Graphics& g)
@@ -79,6 +105,7 @@ Path OneDWave::visualiseState (Graphics& g)
     // Start path
     stringPath.startNewSubPath (0, -u[1][0] * visualScaling + stringBoundaries);
     
+    // Visual spacing between two grid points
     double spacing = getWidth() / static_cast<double>(N);
     double x = spacing;
     
@@ -98,8 +125,22 @@ Path OneDWave::visualiseState (Graphics& g)
     return stringPath;
 }
 
-void OneDWave::excite()
+void OneDWave::excite (double excitationLoc)
 {
-    u[1][3] = 1;
-    u[2][3] = 1;
+    
+    // width (in grid points) of the excitation
+    double width = 10;
+    
+    // make sure we're not going out of bounds at the left boundary
+    int start = std::max (floor((N+1) * excitationLoc) - floor(width * 0.5), 1.0);
+
+    for (int l = 0; l < width; ++l)
+    {
+        // make sure we're not going out of bounds at the right boundary (this does 'cut off' the raised cosine)
+        if (l+start > N - 1)
+            break;
+        
+        u[1][l+start] += 0.5 * (1 - cos(2.0 * MathConstants<double>::pi * l / (width-1.0)));
+        u[2][l+start] += 0.5 * (1 - cos(2.0 * MathConstants<double>::pi * l / (width-1.0)));
+    }
 }
