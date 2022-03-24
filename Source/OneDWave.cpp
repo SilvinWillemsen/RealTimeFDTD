@@ -14,9 +14,13 @@
 //==============================================================================
 OneDWave::OneDWave (double kIn) : k (kIn) // <- This is an initialiser list. It initialises the member variable 'k' (in the "private" section in OneDWave.h), using the argument of the constructor 'kIn'.
 {
+    //******
     
     // ONLY FOR TESTING PURPOSES, you'll have to change this.
     N = 100;
+    
+    //******
+    
     
     // Initialise vectors containing the state of the system
     uStates = std::vector<std::vector<double>> (3,
@@ -57,13 +61,19 @@ void OneDWave::resized()
 void OneDWave::calculateScheme()
 {
     // Here is where you'll have to implement your update equation in a for loop (ranging from l = 1 to l < N).
+
+    //******
     
+    //******
 }
 
 void OneDWave::updateStates()
 {
     // Here is where you'll have to implement the pointer switch.
     
+    //******
+    
+    //******
 }
 
 Path OneDWave::visualiseState (Graphics& g)
