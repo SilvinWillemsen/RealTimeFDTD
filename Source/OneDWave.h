@@ -45,7 +45,7 @@ private:
     double h; // Grid spacing (in m)
     double L; // Length (in m)
     
-    double lambdaSq; // Courant number to be used in the update equation
+    double lambdaSq; // Courant number squared to be used in the update equation
     
     int N; // number of intervals (number of grid points is N+1)
 

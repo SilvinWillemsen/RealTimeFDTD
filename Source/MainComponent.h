@@ -7,7 +7,7 @@
 
 class MainComponent  : public juce::AudioAppComponent,
 ///__________________________
-                        public Timer // timer to update the graphics
+                       public Timer // timer to update the graphics
 ///__________________________
 
 {
