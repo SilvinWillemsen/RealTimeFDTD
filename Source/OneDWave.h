@@ -1,10 +1,8 @@
 /*
   ==============================================================================
-
     OneDWave.h
     Created: 24 Mar 2022 8:38:24am
     Author:  Silvin Willemsen
-
   ==============================================================================
 */
 
@@ -34,7 +32,7 @@ public:
     Path visualiseState (Graphics& g);
     
     // Function to excite the system.
-    void excite();
+    void excite (double excitationLoc);
     
     // Get the output at a specified ratio of the length of the system
     float getOutput (float outRatio) { return u[1][(int)floor(outRatio * N)];};
@@ -42,10 +40,11 @@ public:
 private:
     
     // Variables
-    
     double k; // time step
     double c; // Wave speed (in m/s)
     double h; // Grid spacing (in m)
+    double L; // Length (in m)
+    
     double lambdaSq; // Courant number to be used in the update equation
     
     int N; // number of intervals (number of grid points is N+1)

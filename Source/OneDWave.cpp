@@ -18,7 +18,6 @@ OneDWave::OneDWave (double kIn) : k (kIn) // <- This is an initialiser list. It 
     // ONLY FOR TESTING PURPOSES, you'll have to change this.
     N = 100;
     
-    
     // Initialise vectors containing the state of the system
     uStates = std::vector<std::vector<double>> (3,
                                         std::vector<double>(N+1, 0));
@@ -30,7 +29,8 @@ OneDWave::OneDWave (double kIn) : k (kIn) // <- This is an initialiser list. It 
     for (int i = 0; i < 3; ++i)
         u[i] = &uStates[i][0];
     
-    excite();
+    // Excite at the start halfway along the system.
+    excite (0.5);
 
 }
 
@@ -79,6 +79,7 @@ Path OneDWave::visualiseState (Graphics& g)
     // Start path
     stringPath.startNewSubPath (0, -u[1][0] * visualScaling + stringBoundaries);
     
+    // Visual spacing between two grid points
     double spacing = getWidth() / static_cast<double>(N);
     double x = spacing;
     
@@ -98,8 +99,22 @@ Path OneDWave::visualiseState (Graphics& g)
     return stringPath;
 }
 
-void OneDWave::excite()
+void OneDWave::excite (double excitationLoc)
 {
-    u[1][3] = 1;
-    u[2][3] = 1;
+    
+    // width (in grid points) of the excitation
+    double width = 10;
+    
+    // make sure we're not going out of bounds at the left boundary
+    int start = std::max (floor((N+1) * excitationLoc) - floor(width * 0.5), 1.0);
+
+    for (int l = 0; l < width; ++l)
+    {
+        // make sure we're not going out of bounds at the right boundary (this does 'cut off' the raised cosine)
+        if (l+start > N - 1)
+            break;
+        
+        u[1][l+start] += 0.5 * (1 - cos(2.0 * MathConstants<double>::pi * l / (width-1.0)));
+        u[2][l+start] += 0.5 * (1 - cos(2.0 * MathConstants<double>::pi * l / (width-1.0)));
+    }
 }
