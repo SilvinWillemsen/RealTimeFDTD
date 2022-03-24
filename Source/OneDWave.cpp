@@ -1,0 +1,105 @@
+/*
+  ==============================================================================
+
+    OneDWave.cpp
+    Created: 24 Mar 2022 8:38:24am
+    Author:  Silvin Willemsen
+
+  ==============================================================================
+*/
+
+#include <JuceHeader.h>
+#include "OneDWave.h"
+
+//==============================================================================
+OneDWave::OneDWave (double kIn) : k (kIn) // <- This is an initialiser list. It initialises the member variable 'k' (in the "private" section in OneDWave.h), using the argument of the constructor 'kIn'.
+{
+    
+    // ONLY FOR TESTING PURPOSES, you'll have to change this.
+    N = 100;
+    
+    
+    // Initialise vectors containing the state of the system
+    uStates = std::vector<std::vector<double>> (3,
+                                        std::vector<double>(N+1, 0));
+    
+    // Initialise vector of pointers to the states
+    u.resize (3, nullptr);
+    
+    // Make set memory addresses to first index of the state vectors.
+    for (int i = 0; i < 3; ++i)
+        u[i] = &uStates[i][0];
+    
+    excite();
+
+}
+
+OneDWave::~OneDWave()
+{
+}
+
+void OneDWave::paint (juce::Graphics& g)
+{
+    // Set the colour of the path
+    g.setColour(Colours::cyan);
+    
+    // Generate the path that visualises the state of the system.
+    Path visualStatePath = visualiseState (g);
+    
+    // Draw the path using a stroke (thickness) of 2 pixels.
+    g.strokePath (visualStatePath, PathStrokeType(2.0f));
+}
+
+void OneDWave::resized()
+{
+}
+
+void OneDWave::calculateScheme()
+{
+    // Here is where you'll have to implement your update equation in a for loop (ranging from l = 1 to l < N).
+    
+}
+
+void OneDWave::updateStates()
+{
+    // Here is where you'll have to implement the pointer switch.
+    
+}
+
+Path OneDWave::visualiseState (Graphics& g)
+{
+    double visualScaling = 200; // we have to scale up the state of the system from 'transverse displacement' to 'pixels'
+    
+    // String-boundaries are in the vertical middle of the component
+    double stringBoundaries = getHeight() / 2.0;
+    
+    // Initialise path
+    Path stringPath;
+    
+    // Start path
+    stringPath.startNewSubPath (0, -u[1][0] * visualScaling + stringBoundaries);
+    
+    double spacing = getWidth() / static_cast<double>(N);
+    double x = spacing;
+    
+    for (int l = 1; l <= N; l++)
+    {
+        // Needs to be -u, because a positive u would visually go down
+        float newY = -u[1][l] * visualScaling + stringBoundaries;
+        
+        // if we get NAN values, make sure that we don't get an exception
+        if (isnan(newY))
+            newY = 0;
+        
+        stringPath.lineTo (x, newY);
+        x += spacing;
+    }
+    
+    return stringPath;
+}
+
+void OneDWave::excite()
+{
+    u[1][3] = 1;
+    u[2][3] = 1;
+}
