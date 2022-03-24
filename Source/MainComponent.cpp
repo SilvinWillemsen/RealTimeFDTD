@@ -67,17 +67,18 @@ void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& buffe
     float output = 0.0;
 
     std::vector<float* const*> curChannel {&channelData1, &channelData2};
-    
-    // only do control stuff out of the buffer (at least work with flags so that control doesn't interfere with the scheme calculation)
-//    if (mySimpleString->shouldExcite())
-//        mySimpleString->excite();
         
+    // For all samples in the buffer..
     for (int i = 0; i < bufferToFill.numSamples; ++i)
     {
+        // Calculate the scheme once every sample
         oneDWave->calculateScheme();
+        
+        // Calculate the states once every sample
         oneDWave->updateStates();
         
-        output = oneDWave->getOutput (0.8); // get output at 0.8L of the string
+        // Retrieve the output at 0.8 the system length
+        output = oneDWave->getOutput (0.8);
         
         // Send the output to both channels.
         for (int channel = 0; channel < numChannels; ++channel)
